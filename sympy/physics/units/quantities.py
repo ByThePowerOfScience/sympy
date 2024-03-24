@@ -70,7 +70,9 @@ class Quantity(AtomicExpr):
 
     @property
     def value(self):
-        return self.scale_factor * self.dimension 
+        from sympy.physics.units import UnitSystem
+        unit_system = UnitSystem.get_default_unit_system()
+        return self.scale_factor * unit_system.derived_units[self.dimension]
     
     @property
     def name(self):
