@@ -7,6 +7,7 @@ from sympy.core.symbol import Symbol
 from sympy.core.sympify import sympify
 from sympy.physics.units.dimensions import _QuantityMapper
 from sympy.physics.units.prefixes import Prefix
+from sympy.physics.units import UnitSystem
 
 
 class Quantity(AtomicExpr):
@@ -69,20 +70,8 @@ class Quantity(AtomicExpr):
         UnitSystem._quantity_dimensional_equivalence_map_global[self] = reference_quantity
 
     @property
-    def value(self):
-        from sympy.physics.units import UnitSystem
-        unit_system = UnitSystem.get_default_unit_system()
-        return self.scale_factor * unit_system.derived_units[self.dimension]
-    
-    @property
     def name(self):
         return self._name
-
-    @property
-    def dimension(self):
-        from sympy.physics.units import UnitSystem
-        unit_system = UnitSystem.get_default_unit_system()
-        return unit_system.get_quantity_dimension(self)
 
     @property
     def abbrev(self):
@@ -93,14 +82,34 @@ class Quantity(AtomicExpr):
         """
         return self._abbrev
 
+    def get_dimension(self, unit_system = UnitSystem.get_default_unit_system()):
+        return unit_system.get_quantity_dimension(self)
+
+    @property
+    def dimension(self):
+        return self.get_dimension()
+
+    def get_scale_factor(self, unit_system = UnitSystem.get_default_unit_system()):
+        """
+        Overall magnitude of the quantity as compared to the canonical units.
+        """
+        return unit_system.get_quantity_scale_factor(self)
+
     @property
     def scale_factor(self):
         """
         Overall magnitude of the quantity as compared to the canonical units.
         """
-        from sympy.physics.units import UnitSystem
-        unit_system = UnitSystem.get_default_unit_system()
-        return unit_system.get_quantity_scale_factor(self)
+        return self.get_scale_factor()
+
+    def get_value(self, unit_system = UnitSystem.get_default_unit_system()):
+        return self.get_scale_factor(unit_system) * unit_system.derived_units[self.get_dimension(unit_system)]
+
+    @property
+    def value(self):
+        return self.get_value()
+
+    
 
     def _eval_is_positive(self):
         return True
