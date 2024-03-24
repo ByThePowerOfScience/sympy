@@ -69,6 +69,10 @@ class Quantity(AtomicExpr):
         UnitSystem._quantity_dimensional_equivalence_map_global[self] = reference_quantity
 
     @property
+    def value(self):
+        return self.scale_factor * self.dimension 
+    
+    @property
     def name(self):
         return self._name
 
