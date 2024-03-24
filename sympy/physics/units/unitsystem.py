@@ -26,7 +26,8 @@ class UnitSystem(_QuantityMapper):
     """
 
     _unit_systems = {}  # type: tDict[str, UnitSystem]
-
+    _default_unit_system = UnitSystem._unit_systems["SI"]
+    
     def __init__(self, base_units, units=(), name="", descr="", dimension_system=None, derived_units: tDict[Dimension, Quantity]={}):
 
         UnitSystem._unit_systems[name] = self
@@ -90,6 +91,9 @@ class UnitSystem(_QuantityMapper):
     def get_quantity_value(self, quantity):
         return self.get_quantity_scale_factor(quantity) * self.derived_units[self.get_quantity_dimension(quantity)]
 
+    def quantity(self, quantity):
+        return self.get_quantity_value(quantity)
+
     @staticmethod
     def get_unit_system(unit_system):
         if isinstance(unit_system, UnitSystem):
@@ -107,7 +111,11 @@ class UnitSystem(_QuantityMapper):
 
     @staticmethod
     def get_default_unit_system():
-        return UnitSystem._unit_systems["SI"]
+        return _default_unit_system
+
+    @staticmethod
+    def set_default_unit_system(unit_system):
+        _default_unit_system = unit_system
 
     @property
     def dim(self):
