@@ -87,6 +87,9 @@ class UnitSystem(_QuantityMapper):
             return qsfm[unit]
         return super().get_quantity_scale_factor(unit)
 
+    def get_quantity_value(self, quantity):
+        return self.get_quantity_scale_factor(quantity) * self.derived_units[self.get_quantity_dimension(quantity)]
+
     @staticmethod
     def get_unit_system(unit_system):
         if isinstance(unit_system, UnitSystem):
