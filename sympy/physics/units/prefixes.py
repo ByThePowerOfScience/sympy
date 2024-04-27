@@ -83,7 +83,7 @@ class Prefix(Expr):
         if not isinstance(other, (Quantity, Prefix)):
             return super().__mul__(other)
 
-        fact = self.scale_factor * other.scale_factor
+        fact = self.scale_factor * other.scale_factor # RETURNS 1 EVEN IF UNITS DON'T CANCEL
 
         if isinstance(other, Prefix):
             if fact == 1:
@@ -100,7 +100,7 @@ class Prefix(Expr):
         if not hasattr(other, "scale_factor"):
             return super().__truediv__(other)
 
-        fact = self.scale_factor / other.scale_factor
+        fact = self.scale_factor / other.scale_factor # RETURNS 1 EVEN IF UNITS DON'T CANCEL
 
         if fact == 1:
             return S.One
